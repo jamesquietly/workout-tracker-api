@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { AuthModule } from 'src/auth/auth.module';
 import { PlanModule } from './plan.module';
 import { PlanService } from './plan.service';
@@ -130,6 +130,23 @@ describe('PlanController (integration with test DB)', () => {
         .send({ title: 'Updated' })
         .expect(401);
     });
+
+    it('should return 400 when trying to update another user\'s plan', async () => {
+      const userA = await testingInstance.registerAndLogin('patch-other-a@example.com');
+      const plan = await planService.createPlan({
+        title: 'User A Plan',
+        description: 'Desc',
+        userId: userA.user.id,
+      });
+
+      const userB = await testingInstance.registerAndLogin('patch-other-b@example.com');
+
+      await request(testingInstance.server)
+        .patch(`/plans/${plan.id}`)
+        .set('Cookie', userB.cookies)
+        .send({ title: 'Hacked' })
+        .expect(400);
+    });
   });
 
   describe('DELETE /plans/:id', () => {
@@ -154,6 +171,22 @@ describe('PlanController (integration with test DB)', () => {
 
     it('should return 401 when not authenticated', async () => {
       await request(testingInstance.server).delete('/plans/1').expect(401);
+    });
+
+    it('should return 400 when trying to delete another user\'s plan', async () => {
+      const userA = await testingInstance.registerAndLogin('delete-other-a@example.com');
+      const plan = await planService.createPlan({
+        title: 'User A Plan',
+        description: 'Desc',
+        userId: userA.user.id,
+      });
+
+      const userB = await testingInstance.registerAndLogin('delete-other-b@example.com');
+
+      await request(testingInstance.server)
+        .delete(`/plans/${plan.id}`)
+        .set('Cookie', userB.cookies)
+        .expect(400);
     });
   });
 });

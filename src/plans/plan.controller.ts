@@ -37,13 +37,13 @@ export class PlanController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  updatePlan(@Param('id') id: number, @Body() updatePlanDto: UpdatePlanDto) {
-    return this.planService.updatePlan(id, updatePlanDto);
+  updatePlan(@Param('id') id: number, @Body() updatePlanDto: UpdatePlanDto, @CurrentUser() user: CurrentUserPayload) {
+    return this.planService.updatePlan(id, updatePlanDto, user);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  deletePlan(@Param('id') id: number) {
-    return this.planService.deletePlan(id);
+  deletePlan(@Param('id') id: number, @CurrentUser() user: CurrentUserPayload) {
+    return this.planService.deletePlan(id, user);
   }
 }
