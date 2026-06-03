@@ -5,7 +5,7 @@ services:
       args:
         NODE_ENV: production
       dockerfile: Dockerfile
-    container_name: boilerplate-api
+    container_name: workout-tracker-api
     restart: unless-stopped
 
     ports:
@@ -20,7 +20,7 @@ services:
 
   postgres:
     image: postgres:18
-    container_name: boilerplate-db
+    container_name: workout-tracker-db
     restart: unless-stopped
 
     environment:

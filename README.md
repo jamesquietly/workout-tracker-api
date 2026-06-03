@@ -33,9 +33,9 @@ $ pnpm run test:cov
 Needs a registry to push the image to like AWS ECR, Docker Hub, etc.
 
 ```bash
-$ docker build --build-arg NODE_ENV=production -t boilerplate-api:1.0.0 .
-$ docker tag boilerplate-api:1.0.0 yourregistry/boilerplate-api:1.0.0
-$ docker push yourregistry/boilerplate-api:1.0.0
+$ docker build --build-arg NODE_ENV=production -t workout-tracker-api:1.0.0 .
+$ docker tag workout-tracker-api:1.0.0 yourregistry/workout-tracker-api:1.0.0
+$ docker push yourregistry/workout-tracker-api:1.0.0
 ```
 
 ## Test docker-compose.prod.yml
