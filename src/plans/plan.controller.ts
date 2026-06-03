@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PlanService } from './plan.service';
-import { CurrentUser } from 'src/decorators/current-user.decorator';
+import { CurrentUser, type CurrentUserPayload } from 'src/decorators/current-user.decorator';
 import { CreatePlanDto, UpdatePlanDto } from './plan.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
@@ -19,7 +19,7 @@ export class PlanController {
 
   @Get('user-plans')
   @UseGuards(JwtAuthGuard)
-  findUserPlans(@CurrentUser() user: CurrentUser) {
+  findUserPlans(@CurrentUser() user: CurrentUserPayload) {
     return this.planService.findByUserId(user.userId);
   }
 
@@ -27,7 +27,7 @@ export class PlanController {
   @UseGuards(JwtAuthGuard)
   createPlan(
     @Body() createPlanDto: CreatePlanDto,
-    @CurrentUser() user: CurrentUser,
+    @CurrentUser() user: CurrentUserPayload,
   ) {
     return this.planService.createPlan({
       ...createPlanDto,

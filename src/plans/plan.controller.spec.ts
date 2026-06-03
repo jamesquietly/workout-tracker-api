@@ -1,14 +1,13 @@
+import { NotFoundException } from '@nestjs/common';
 import { AuthModule } from 'src/auth/auth.module';
 import { PlanModule } from './plan.module';
 import { PlanService } from './plan.service';
-import { UserService } from 'src/users/user.service';
 import { createTestModule, TestingInstance } from 'src/utils/test-utils';
 import request from 'supertest';
 
 describe('PlanController (integration with test DB)', () => {
   let testingInstance: TestingInstance;
   let planService: PlanService;
-  let userService: UserService;
 
   beforeAll(async () => {
     testingInstance = await createTestModule({
@@ -16,7 +15,6 @@ describe('PlanController (integration with test DB)', () => {
     });
 
     planService = testingInstance.module.get<PlanService>(PlanService);
-    userService = testingInstance.module.get<UserService>(UserService);
   });
 
   afterAll(async () => {
@@ -145,13 +143,13 @@ describe('PlanController (integration with test DB)', () => {
         userId: user.id,
       });
 
-      await request(testingInstance.server)
+      const res = await request(testingInstance.server)
         .delete(`/plans/${plan.id}`)
         .set('Cookie', cookies)
         .expect(200);
 
-      const deletedPlan = await planService.findById(plan.id);
-      expect(deletedPlan).toBeNull();
+      expect(res.body.id).toBe(plan.id);
+      expect(res.body.deleted).toBeDefined();
     });
 
     it('should return 401 when not authenticated', async () => {

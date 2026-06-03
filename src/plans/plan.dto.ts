@@ -10,7 +10,6 @@ export class CreatePlanDto {
   description: string;
 
   @IsNumber()
-  @IsNotEmpty()
   userId: number;
 }
 

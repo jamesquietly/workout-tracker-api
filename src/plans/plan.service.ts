@@ -11,8 +11,8 @@ export class PlanService {
     private readonly planRepository: Repository<Plan>,
   ) {}
 
-  findById(id: number) {
-    const plan = this.planRepository.findOne({ where: { id } });
+  async findById(id: number) {
+    const plan = await this.planRepository.findOne({ where: { id } });
     if (!plan) {
       throw new NotFoundException('Plan not found');
     }
@@ -44,8 +44,9 @@ export class PlanService {
   async deletePlan(id: number) {
     const plan = await this.findById(id);
     if (plan) {
-      await this.planRepository.delete({ id: plan.id });
+      await this.planRepository.softDelete({ id: plan.id });
     }
-    return this.findById(id);
+
+    return this.planRepository.findOne({ where: { id }, withDeleted: true });
   }
 }
