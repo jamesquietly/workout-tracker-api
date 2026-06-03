@@ -29,10 +29,7 @@ export class PlanController {
     @Body() createPlanDto: CreatePlanDto,
     @CurrentUser() user: CurrentUserPayload,
   ) {
-    return this.planService.createPlan({
-      ...createPlanDto,
-      userId: user.userId,
-    });
+    return this.planService.createPlan(createPlanDto, user);
   }
 
   @Patch(':id')

@@ -62,11 +62,13 @@ describe('PlanController (integration with test DB)', () => {
       const { cookies, user } = await testingInstance.registerAndLogin(
         'get-user-plans@example.com',
       );
-      await planService.createPlan({
-        title: 'My Plan',
-        description: 'Desc',
-        userId: user.id,
-      });
+      await planService.createPlan(
+        {
+          title: 'My Plan',
+          description: 'Desc',
+        },
+        { userId: user.id, email: user.email },
+      );
 
       const res = await request(testingInstance.server)
         .get('/plans/user-plans')
@@ -80,11 +82,13 @@ describe('PlanController (integration with test DB)', () => {
 
     it('should not return plans belonging to other users', async () => {
       const userA = await testingInstance.registerAndLogin('get-other-user-a@example.com');
-      await planService.createPlan({
-        title: 'User A Plan',
-        description: 'Desc',
-        userId: userA.user.id,
-      });
+      await planService.createPlan(
+        {
+          title: 'User A Plan',
+          description: 'Desc',
+        },
+        { userId: userA.user.id, email: userA.user.email },
+      );
 
       const userB = await testingInstance.registerAndLogin('get-other-user-b@example.com');
 
@@ -108,11 +112,13 @@ describe('PlanController (integration with test DB)', () => {
       const { cookies, user } = await testingInstance.registerAndLogin(
         'patch-update-plan@example.com',
       );
-      const plan = await planService.createPlan({
-        title: 'Original',
-        description: 'Original desc',
-        userId: user.id,
-      });
+      const plan = await planService.createPlan(
+        {
+          title: 'Original',
+          description: 'Original desc',
+        },
+        { userId: user.id, email: user.email },
+      );
 
       const res = await request(testingInstance.server)
         .patch(`/plans/${plan.id}`)
@@ -133,11 +139,13 @@ describe('PlanController (integration with test DB)', () => {
 
     it('should return 400 when trying to update another user\'s plan', async () => {
       const userA = await testingInstance.registerAndLogin('patch-other-a@example.com');
-      const plan = await planService.createPlan({
-        title: 'User A Plan',
-        description: 'Desc',
-        userId: userA.user.id,
-      });
+      const plan = await planService.createPlan(
+        {
+          title: 'User A Plan',
+          description: 'Desc',
+        },
+        { userId: userA.user.id, email: userA.user.email },
+      );
 
       const userB = await testingInstance.registerAndLogin('patch-other-b@example.com');
 
@@ -154,11 +162,13 @@ describe('PlanController (integration with test DB)', () => {
       const { cookies, user } = await testingInstance.registerAndLogin(
         'delete-my-plan@example.com',
       );
-      const plan = await planService.createPlan({
-        title: 'To Delete',
-        description: 'Desc',
-        userId: user.id,
-      });
+      const plan = await planService.createPlan(
+        {
+          title: 'To Delete',
+          description: 'Desc',
+        },
+        { userId: user.id, email: user.email },
+      );
 
       const res = await request(testingInstance.server)
         .delete(`/plans/${plan.id}`)
@@ -175,11 +185,13 @@ describe('PlanController (integration with test DB)', () => {
 
     it('should return 400 when trying to delete another user\'s plan', async () => {
       const userA = await testingInstance.registerAndLogin('delete-other-a@example.com');
-      const plan = await planService.createPlan({
-        title: 'User A Plan',
-        description: 'Desc',
-        userId: userA.user.id,
-      });
+      const plan = await planService.createPlan(
+        {
+          title: 'User A Plan',
+          description: 'Desc',
+        },
+        { userId: userA.user.id, email: userA.user.email },
+      );
 
       const userB = await testingInstance.registerAndLogin('delete-other-b@example.com');
 

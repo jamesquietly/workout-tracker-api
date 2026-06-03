@@ -30,11 +30,11 @@ export class PlanService {
     return this.planRepository.find({ where: { user: { id: userId } } });
   }
 
-  createPlan(createPlanDto: CreatePlanDto) {
+  createPlan(createPlanDto: CreatePlanDto, user: CurrentUserPayload) {
     const plan = this.planRepository.create({
       title: createPlanDto.title,
       description: createPlanDto.description,
-      user: { id: createPlanDto.userId },
+      user: { id: user.userId },
     });
     return this.planRepository.save(plan);
   }

@@ -8,9 +8,6 @@ export class CreatePlanDto {
   @IsString()
   @IsNotEmpty()
   description: string;
-
-  @IsNumber()
-  userId: number;
 }
 
 export class UpdatePlanDto {

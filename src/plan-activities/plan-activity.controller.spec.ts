@@ -35,11 +35,13 @@ describe('PlanActivityController (integration with test DB)', () => {
       const { cookies, user } = await testingInstance.registerAndLogin(
         'post-create-plan-activity@example.com',
       );
-      const plan = await planService.createPlan({
-        title: 'Test Plan',
-        description: 'Desc',
-        userId: user.id,
-      });
+      const plan = await planService.createPlan(
+        {
+          title: 'Test Plan',
+          description: 'Desc',
+        },
+        { userId: user.id, email: user.email },
+      );
 
       const res = await request(testingInstance.server)
         .post('/plan-activities')
@@ -85,11 +87,13 @@ describe('PlanActivityController (integration with test DB)', () => {
       const { cookies, user } = await testingInstance.registerAndLogin(
         'get-user-plan-activities@example.com',
       );
-      const plan = await planService.createPlan({
-        title: 'Plan',
-        description: 'Desc',
-        userId: user.id,
-      });
+      const plan = await planService.createPlan(
+        {
+          title: 'Plan',
+          description: 'Desc',
+        },
+        { userId: user.id, email: user.email },
+      );
       await planActivityService.createPlanActivity({
         planId: plan.id,
         notes: 'Activity item',
@@ -108,11 +112,13 @@ describe('PlanActivityController (integration with test DB)', () => {
 
     it('should not return plan activities belonging to other users', async () => {
       const userA = await testingInstance.registerAndLogin('get-other-activity-a@example.com');
-      const planA = await planService.createPlan({
-        title: 'Plan A',
-        description: 'Desc',
-        userId: userA.user.id,
-      });
+      const planA = await planService.createPlan(
+        {
+          title: 'Plan A',
+          description: 'Desc',
+        },
+        { userId: userA.user.id, email: userA.user.email },
+      );
       await planActivityService.createPlanActivity({
         planId: planA.id,
         notes: 'User A activity',
@@ -142,11 +148,13 @@ describe('PlanActivityController (integration with test DB)', () => {
       const { cookies, user } = await testingInstance.registerAndLogin(
         'patch-update-pa@example.com',
       );
-      const plan = await planService.createPlan({
-        title: 'Plan',
-        description: 'Desc',
-        userId: user.id,
-      });
+      const plan = await planService.createPlan(
+        {
+          title: 'Plan',
+          description: 'Desc',
+        },
+        { userId: user.id, email: user.email },
+      );
       const activity = await planActivityService.createPlanActivity({
         planId: plan.id,
         notes: 'Original notes',
@@ -186,11 +194,13 @@ describe('PlanActivityController (integration with test DB)', () => {
       const { cookies, user } = await testingInstance.registerAndLogin(
         'delete-pa@example.com',
       );
-      const plan = await planService.createPlan({
-        title: 'Plan',
-        description: 'Desc',
-        userId: user.id,
-      });
+      const plan = await planService.createPlan(
+        {
+          title: 'Plan',
+          description: 'Desc',
+        },
+        { userId: user.id, email: user.email },
+      );
       const activity = await planActivityService.createPlanActivity({
         planId: plan.id,
         notes: 'To delete',
