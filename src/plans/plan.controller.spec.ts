@@ -1,4 +1,3 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { AuthModule } from 'src/auth/auth.module';
 import { PlanModule } from './plan.module';
 import { PlanService } from './plan.service';

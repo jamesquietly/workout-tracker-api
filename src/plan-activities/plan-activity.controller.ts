@@ -17,10 +17,7 @@ export class PlanActivityController {
   @Post()
   @UseGuards(JwtAuthGuard)
   createPlanActivity(@Body() createPlanActivityDto: CreatePlanActivityDto, @CurrentUser() currentUser: CurrentUserPayload) {
-    return this.planActivityService.createPlanActivity({
-      ...createPlanActivityDto,
-      userId: currentUser.userId,
-    });
+    return this.planActivityService.createPlanActivity(createPlanActivityDto, currentUser);
   }
 
   @Patch(':id')

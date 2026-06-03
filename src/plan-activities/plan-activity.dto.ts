@@ -12,9 +12,6 @@ export class CreatePlanActivityDto {
   @IsDate()
   @IsNotEmpty()
   assignedDate: Date;
-  
-  @IsNumber()
-  userId: number;
 }
 
 export class UpdatePlanActivityDto {

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PlanActivity } from 'src/entities/PlanActivity';
 import { CreatePlanActivityDto, UpdatePlanActivityDto } from './plan-activity.dto';
+import { CurrentUserPayload } from 'src/decorators/current-user.decorator';
 
 @Injectable()
 export class PlanActivityService {
@@ -27,10 +28,10 @@ export class PlanActivityService {
     });
   }
   
-  createPlanActivity(planActivityData: CreatePlanActivityDto) {
+  createPlanActivity(planActivityData: CreatePlanActivityDto, user: CurrentUserPayload) {
     const planActivity = this.planActivityRepository.create({
       ...planActivityData,
-      user: { id: planActivityData.userId },
+      user: { id: user.userId },
     });
     return this.planActivityRepository.save(planActivity);
   }

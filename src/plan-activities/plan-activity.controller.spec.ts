@@ -3,7 +3,6 @@ import { PlanActivityModule } from './plan-activity.module';
 import { PlanModule } from 'src/plans/plan.module';
 import { PlanActivityService } from './plan-activity.service';
 import { PlanService } from 'src/plans/plan.service';
-import { NotFoundException } from '@nestjs/common';
 import { getDataSourceToken } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { createTestModule, TestingInstance } from 'src/utils/test-utils';
@@ -98,8 +97,7 @@ describe('PlanActivityController (integration with test DB)', () => {
         planId: plan.id,
         notes: 'Activity item',
         assignedDate: new Date(),
-        userId: user.id,
-      });
+      }, { userId: user.id, email: user.email });
 
       const res = await request(testingInstance.server)
         .get('/plan-activities/user-plan-activities')
@@ -123,8 +121,7 @@ describe('PlanActivityController (integration with test DB)', () => {
         planId: planA.id,
         notes: 'User A activity',
         assignedDate: new Date(),
-        userId: userA.user.id,
-      });
+      }, { userId: userA.user.id, email: userA.user.email });
 
       const userB = await testingInstance.registerAndLogin('get-other-activity-b@example.com');
 
@@ -159,8 +156,7 @@ describe('PlanActivityController (integration with test DB)', () => {
         planId: plan.id,
         notes: 'Original notes',
         assignedDate: new Date(),
-        userId: user.id,
-      });
+      }, { userId: user.id, email: user.email });
 
       const res = await request(testingInstance.server)
         .patch(`/plan-activities/${activity.id}`)
@@ -205,8 +201,7 @@ describe('PlanActivityController (integration with test DB)', () => {
         planId: plan.id,
         notes: 'To delete',
         assignedDate: new Date(),
-        userId: user.id,
-      });
+      }, { userId: user.id, email: user.email });
 
       const res = await request(testingInstance.server)
         .delete(`/plan-activities/${activity.id}`)
