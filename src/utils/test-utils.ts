@@ -4,7 +4,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import cookieParser from 'cookie-parser';
 import { Server } from 'http';
+import { UserService } from 'src/users/user.service';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import request from 'supertest';
+import { User } from 'src/entities/User';
 
 type NestModuleImport = NonNullable<ModuleMetadata['imports']>[number];
 
@@ -16,6 +19,7 @@ export interface TestingInstance {
   module: TestingModule;
   app: INestApplication<Server>;
   server: Server;
+  registerAndLogin: (email: string) => Promise<{ cookies: string; user: User }>;
 }
 
 export async function createTestModule(
@@ -50,5 +54,17 @@ export async function createTestModule(
   app.use(cookieParser());
   await app.init();
 
-  return { module, app, server: app.getHttpServer() };
+  const userService = module.get<UserService>(UserService);
+  const server = app.getHttpServer();
+
+  async function registerAndLogin(email: string) {
+      const user = await userService.register({ email, password: 'password123' });
+      const loginRes = await request(server)
+        .post('/auth/login')
+        .send({ email, password: 'password123' })
+        .expect(200);
+      return { cookies: loginRes.headers['set-cookie'], user };
+    }
+
+  return { module, app, server, registerAndLogin };
 }
