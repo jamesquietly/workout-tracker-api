@@ -174,6 +174,27 @@ describe('PlanActivityController (integration with test DB)', () => {
         .expect(401);
     });
 
+    it('should return 400 when trying to update another user\'s plan activity', async () => {
+      const userA = await testingInstance.registerAndLogin('patch-ownership-a@example.com');
+      const planA = await planService.createPlan(
+        { title: 'Plan A', description: 'Desc' },
+        { userId: userA.user.id, email: userA.user.email },
+      );
+      const activity = await planActivityService.createPlanActivity({
+        planId: planA.id,
+        notes: 'User A activity',
+        assignedDate: new Date(),
+      }, { userId: userA.user.id, email: userA.user.email });
+
+      const userB = await testingInstance.registerAndLogin('patch-ownership-b@example.com');
+
+      await request(testingInstance.server)
+        .patch(`/plan-activities/${activity.id}`)
+        .set('Cookie', userB.cookies)
+        .send({ notes: 'Hacked' })
+        .expect(400);
+    });
+
     it('should return 404 when plan activity does not exist', async () => {
       const { cookies } = await testingInstance.registerAndLogin('patch-nonexistent-pa@example.com');
 
@@ -214,6 +235,26 @@ describe('PlanActivityController (integration with test DB)', () => {
 
     it('should return 401 when not authenticated', async () => {
       await request(testingInstance.server).delete('/plan-activities/1').expect(401);
+    });
+
+    it('should return 400 when trying to delete another user\'s plan activity', async () => {
+      const userA = await testingInstance.registerAndLogin('delete-ownership-a@example.com');
+      const planA = await planService.createPlan(
+        { title: 'Plan A', description: 'Desc' },
+        { userId: userA.user.id, email: userA.user.email },
+      );
+      const activity = await planActivityService.createPlanActivity({
+        planId: planA.id,
+        notes: 'User A activity',
+        assignedDate: new Date(),
+      }, { userId: userA.user.id, email: userA.user.email });
+
+      const userB = await testingInstance.registerAndLogin('delete-ownership-b@example.com');
+
+      await request(testingInstance.server)
+        .delete(`/plan-activities/${activity.id}`)
+        .set('Cookie', userB.cookies)
+        .expect(400);
     });
 
     it('should return 404 when plan activity does not exist', async () => {

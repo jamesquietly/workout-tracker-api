@@ -22,13 +22,13 @@ export class PlanActivityController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  updatePlanActivity(@Param('id') id: number, @Body() updatePlanActivityDto: UpdatePlanActivityDto) {
-    return this.planActivityService.updatePlanActivity(id, updatePlanActivityDto);
+  updatePlanActivity(@Param('id') id: number, @Body() updatePlanActivityDto: UpdatePlanActivityDto, @CurrentUser() currentUser: CurrentUserPayload) {
+    return this.planActivityService.updatePlanActivity(id, updatePlanActivityDto, currentUser);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  deletePlanActivity(@Param('id') id: number) {
-    return this.planActivityService.deletePlanActivity(id);
+  deletePlanActivity(@Param('id') id: number, @CurrentUser() currentUser: CurrentUserPayload) {
+    return this.planActivityService.deletePlanActivity(id, currentUser);
   }
 }

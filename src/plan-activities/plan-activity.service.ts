@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PlanActivity } from 'src/entities/PlanActivity';
@@ -15,11 +15,18 @@ export class PlanActivityService {
   async findById(id: number) {
     const planActivity = await this.planActivityRepository.findOne({
       where: { id },
+      relations: { user: true },
     });
     if (!planActivity) {
       throw new NotFoundException('Plan activity not found');
     }
     return planActivity;
+  }
+
+  checkOwnership(planActivity: PlanActivity, userId: number) {
+    if (planActivity.user.id !== userId) {
+      throw new BadRequestException('Only owner can perform this action');
+    }
   }
 
   getPlanActivitiesByUserId(userId: number) {
@@ -36,16 +43,18 @@ export class PlanActivityService {
     return this.planActivityRepository.save(planActivity);
   }
   
-  async updatePlanActivity(id: number, updatePlanActivityDto: UpdatePlanActivityDto) {
+  async updatePlanActivity(id: number, updatePlanActivityDto: UpdatePlanActivityDto, user: CurrentUserPayload) {
     const planActivity = await this.findById(id);
+    this.checkOwnership(planActivity, user.userId);
     if (planActivity) {
       await this.planActivityRepository.update(id, updatePlanActivityDto);
     }
     return this.findById(id);
   }
 
-  async deletePlanActivity(id: number) {
+  async deletePlanActivity(id: number, user: CurrentUserPayload) {
     const planActivity = await this.findById(id);
+    this.checkOwnership(planActivity, user.userId);
     if (planActivity) {
       await this.planActivityRepository.softDelete(id);
     }
