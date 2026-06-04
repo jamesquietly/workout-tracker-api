@@ -9,7 +9,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PlanService } from './plan.service';
-import { CurrentUser, type CurrentUserPayload } from 'src/decorators/current-user.decorator';
+import {
+  CurrentUser,
+  type CurrentUserPayload,
+} from 'src/decorators/current-user.decorator';
 import { CreatePlanDto, UpdatePlanDto } from './plan.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
@@ -34,7 +37,11 @@ export class PlanController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  updatePlan(@Param('id') id: number, @Body() updatePlanDto: UpdatePlanDto, @CurrentUser() user: CurrentUserPayload) {
+  updatePlan(
+    @Param('id') id: number,
+    @Body() updatePlanDto: UpdatePlanDto,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
     return this.planService.updatePlan(id, updatePlanDto, user);
   }
 

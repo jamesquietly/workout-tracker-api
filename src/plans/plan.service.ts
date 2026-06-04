@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Plan } from 'src/entities/Plan';
@@ -13,7 +17,10 @@ export class PlanService {
   ) {}
 
   async findById(id: number) {
-    const plan = await this.planRepository.findOne({ where: { id }, relations: { user: true } });
+    const plan = await this.planRepository.findOne({
+      where: { id },
+      relations: { user: true },
+    });
     if (!plan) {
       throw new NotFoundException('Plan not found');
     }
@@ -39,7 +46,11 @@ export class PlanService {
     return this.planRepository.save(plan);
   }
 
-  async updatePlan(id: number, updatePlanDto: UpdatePlanDto, user: CurrentUserPayload) {
+  async updatePlan(
+    id: number,
+    updatePlanDto: UpdatePlanDto,
+    user: CurrentUserPayload,
+  ) {
     const plan = await this.findById(id);
     this.checkPlanOwnership(plan, user);
     if (plan) {

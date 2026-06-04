@@ -18,10 +18,12 @@ describe('PlanActivityController (integration with test DB)', () => {
       imports: [PlanActivityModule, PlanModule, AuthModule],
     });
 
-    planActivityService = testingInstance.module.get<PlanActivityService>(PlanActivityService);
+    planActivityService =
+      testingInstance.module.get<PlanActivityService>(PlanActivityService);
     planService = testingInstance.module.get<PlanService>(PlanService);
 
-    const dataSource = testingInstance.module.get<DataSource>(getDataSourceToken());
+    const dataSource =
+      testingInstance.module.get<DataSource>(getDataSourceToken());
     await dataSource.query('TRUNCATE plan_activity, plan, "user" CASCADE');
   });
 
@@ -93,11 +95,14 @@ describe('PlanActivityController (integration with test DB)', () => {
         },
         { userId: user.id, email: user.email },
       );
-      await planActivityService.createPlanActivity({
-        planId: plan.id,
-        notes: 'Activity item',
-        assignedDate: new Date(),
-      }, { userId: user.id, email: user.email });
+      await planActivityService.createPlanActivity(
+        {
+          planId: plan.id,
+          notes: 'Activity item',
+          assignedDate: new Date(),
+        },
+        { userId: user.id, email: user.email },
+      );
 
       const res = await request(testingInstance.server)
         .get('/plan-activities/user-plan-activities')
@@ -109,7 +114,9 @@ describe('PlanActivityController (integration with test DB)', () => {
     });
 
     it('should not return plan activities belonging to other users', async () => {
-      const userA = await testingInstance.registerAndLogin('get-other-activity-a@example.com');
+      const userA = await testingInstance.registerAndLogin(
+        'get-other-activity-a@example.com',
+      );
       const planA = await planService.createPlan(
         {
           title: 'Plan A',
@@ -117,13 +124,18 @@ describe('PlanActivityController (integration with test DB)', () => {
         },
         { userId: userA.user.id, email: userA.user.email },
       );
-      await planActivityService.createPlanActivity({
-        planId: planA.id,
-        notes: 'User A activity',
-        assignedDate: new Date(),
-      }, { userId: userA.user.id, email: userA.user.email });
+      await planActivityService.createPlanActivity(
+        {
+          planId: planA.id,
+          notes: 'User A activity',
+          assignedDate: new Date(),
+        },
+        { userId: userA.user.id, email: userA.user.email },
+      );
 
-      const userB = await testingInstance.registerAndLogin('get-other-activity-b@example.com');
+      const userB = await testingInstance.registerAndLogin(
+        'get-other-activity-b@example.com',
+      );
 
       const res = await request(testingInstance.server)
         .get('/plan-activities/user-plan-activities')
@@ -152,11 +164,14 @@ describe('PlanActivityController (integration with test DB)', () => {
         },
         { userId: user.id, email: user.email },
       );
-      const activity = await planActivityService.createPlanActivity({
-        planId: plan.id,
-        notes: 'Original notes',
-        assignedDate: new Date(),
-      }, { userId: user.id, email: user.email });
+      const activity = await planActivityService.createPlanActivity(
+        {
+          planId: plan.id,
+          notes: 'Original notes',
+          assignedDate: new Date(),
+        },
+        { userId: user.id, email: user.email },
+      );
 
       const res = await request(testingInstance.server)
         .patch(`/plan-activities/${activity.id}`)
@@ -174,19 +189,26 @@ describe('PlanActivityController (integration with test DB)', () => {
         .expect(401);
     });
 
-    it('should return 400 when trying to update another user\'s plan activity', async () => {
-      const userA = await testingInstance.registerAndLogin('patch-ownership-a@example.com');
+    it("should return 400 when trying to update another user's plan activity", async () => {
+      const userA = await testingInstance.registerAndLogin(
+        'patch-ownership-a@example.com',
+      );
       const planA = await planService.createPlan(
         { title: 'Plan A', description: 'Desc' },
         { userId: userA.user.id, email: userA.user.email },
       );
-      const activity = await planActivityService.createPlanActivity({
-        planId: planA.id,
-        notes: 'User A activity',
-        assignedDate: new Date(),
-      }, { userId: userA.user.id, email: userA.user.email });
+      const activity = await planActivityService.createPlanActivity(
+        {
+          planId: planA.id,
+          notes: 'User A activity',
+          assignedDate: new Date(),
+        },
+        { userId: userA.user.id, email: userA.user.email },
+      );
 
-      const userB = await testingInstance.registerAndLogin('patch-ownership-b@example.com');
+      const userB = await testingInstance.registerAndLogin(
+        'patch-ownership-b@example.com',
+      );
 
       await request(testingInstance.server)
         .patch(`/plan-activities/${activity.id}`)
@@ -196,7 +218,9 @@ describe('PlanActivityController (integration with test DB)', () => {
     });
 
     it('should return 404 when plan activity does not exist', async () => {
-      const { cookies } = await testingInstance.registerAndLogin('patch-nonexistent-pa@example.com');
+      const { cookies } = await testingInstance.registerAndLogin(
+        'patch-nonexistent-pa@example.com',
+      );
 
       await request(testingInstance.server)
         .patch('/plan-activities/99999')
@@ -218,11 +242,14 @@ describe('PlanActivityController (integration with test DB)', () => {
         },
         { userId: user.id, email: user.email },
       );
-      const activity = await planActivityService.createPlanActivity({
-        planId: plan.id,
-        notes: 'To delete',
-        assignedDate: new Date(),
-      }, { userId: user.id, email: user.email });
+      const activity = await planActivityService.createPlanActivity(
+        {
+          planId: plan.id,
+          notes: 'To delete',
+          assignedDate: new Date(),
+        },
+        { userId: user.id, email: user.email },
+      );
 
       const res = await request(testingInstance.server)
         .delete(`/plan-activities/${activity.id}`)
@@ -234,22 +261,31 @@ describe('PlanActivityController (integration with test DB)', () => {
     });
 
     it('should return 401 when not authenticated', async () => {
-      await request(testingInstance.server).delete('/plan-activities/1').expect(401);
+      await request(testingInstance.server)
+        .delete('/plan-activities/1')
+        .expect(401);
     });
 
-    it('should return 400 when trying to delete another user\'s plan activity', async () => {
-      const userA = await testingInstance.registerAndLogin('delete-ownership-a@example.com');
+    it("should return 400 when trying to delete another user's plan activity", async () => {
+      const userA = await testingInstance.registerAndLogin(
+        'delete-ownership-a@example.com',
+      );
       const planA = await planService.createPlan(
         { title: 'Plan A', description: 'Desc' },
         { userId: userA.user.id, email: userA.user.email },
       );
-      const activity = await planActivityService.createPlanActivity({
-        planId: planA.id,
-        notes: 'User A activity',
-        assignedDate: new Date(),
-      }, { userId: userA.user.id, email: userA.user.email });
+      const activity = await planActivityService.createPlanActivity(
+        {
+          planId: planA.id,
+          notes: 'User A activity',
+          assignedDate: new Date(),
+        },
+        { userId: userA.user.id, email: userA.user.email },
+      );
 
-      const userB = await testingInstance.registerAndLogin('delete-ownership-b@example.com');
+      const userB = await testingInstance.registerAndLogin(
+        'delete-ownership-b@example.com',
+      );
 
       await request(testingInstance.server)
         .delete(`/plan-activities/${activity.id}`)
@@ -258,7 +294,9 @@ describe('PlanActivityController (integration with test DB)', () => {
     });
 
     it('should return 404 when plan activity does not exist', async () => {
-      const { cookies } = await testingInstance.registerAndLogin('delete-nonexistent-pa@example.com');
+      const { cookies } = await testingInstance.registerAndLogin(
+        'delete-nonexistent-pa@example.com',
+      );
 
       await request(testingInstance.server)
         .delete('/plan-activities/99999')

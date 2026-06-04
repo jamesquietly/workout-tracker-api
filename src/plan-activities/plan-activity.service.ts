@@ -1,8 +1,15 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PlanActivity } from 'src/entities/PlanActivity';
-import { CreatePlanActivityDto, UpdatePlanActivityDto } from './plan-activity.dto';
+import {
+  CreatePlanActivityDto,
+  UpdatePlanActivityDto,
+} from './plan-activity.dto';
 import { CurrentUserPayload } from 'src/decorators/current-user.decorator';
 
 @Injectable()
@@ -34,16 +41,23 @@ export class PlanActivityService {
       where: { user: { id: userId } },
     });
   }
-  
-  createPlanActivity(planActivityData: CreatePlanActivityDto, user: CurrentUserPayload) {
+
+  createPlanActivity(
+    planActivityData: CreatePlanActivityDto,
+    user: CurrentUserPayload,
+  ) {
     const planActivity = this.planActivityRepository.create({
       ...planActivityData,
       user: { id: user.userId },
     });
     return this.planActivityRepository.save(planActivity);
   }
-  
-  async updatePlanActivity(id: number, updatePlanActivityDto: UpdatePlanActivityDto, user: CurrentUserPayload) {
+
+  async updatePlanActivity(
+    id: number,
+    updatePlanActivityDto: UpdatePlanActivityDto,
+    user: CurrentUserPayload,
+  ) {
     const planActivity = await this.findById(id);
     this.checkOwnership(planActivity, user.userId);
     if (planActivity) {
@@ -58,6 +72,9 @@ export class PlanActivityService {
     if (planActivity) {
       await this.planActivityRepository.softDelete(id);
     }
-    return this.planActivityRepository.findOne({ where: { id }, withDeleted: true });
+    return this.planActivityRepository.findOne({
+      where: { id },
+      withDeleted: true,
+    });
   }
 }

@@ -47,7 +47,9 @@ describe('PlanController (integration with test DB)', () => {
 
   describe('GET /plans/user-plans', () => {
     it('should return empty array when user has no plans', async () => {
-      const { cookies } = await testingInstance.registerAndLogin('get-empty-plans@example.com');
+      const { cookies } = await testingInstance.registerAndLogin(
+        'get-empty-plans@example.com',
+      );
 
       const res = await request(testingInstance.server)
         .get('/plans/user-plans')
@@ -80,7 +82,9 @@ describe('PlanController (integration with test DB)', () => {
     });
 
     it('should not return plans belonging to other users', async () => {
-      const userA = await testingInstance.registerAndLogin('get-other-user-a@example.com');
+      const userA = await testingInstance.registerAndLogin(
+        'get-other-user-a@example.com',
+      );
       await planService.createPlan(
         {
           title: 'User A Plan',
@@ -89,7 +93,9 @@ describe('PlanController (integration with test DB)', () => {
         { userId: userA.user.id, email: userA.user.email },
       );
 
-      const userB = await testingInstance.registerAndLogin('get-other-user-b@example.com');
+      const userB = await testingInstance.registerAndLogin(
+        'get-other-user-b@example.com',
+      );
 
       const res = await request(testingInstance.server)
         .get('/plans/user-plans')
@@ -136,8 +142,10 @@ describe('PlanController (integration with test DB)', () => {
         .expect(401);
     });
 
-    it('should return 400 when trying to update another user\'s plan', async () => {
-      const userA = await testingInstance.registerAndLogin('patch-other-a@example.com');
+    it("should return 400 when trying to update another user's plan", async () => {
+      const userA = await testingInstance.registerAndLogin(
+        'patch-other-a@example.com',
+      );
       const plan = await planService.createPlan(
         {
           title: 'User A Plan',
@@ -146,7 +154,9 @@ describe('PlanController (integration with test DB)', () => {
         { userId: userA.user.id, email: userA.user.email },
       );
 
-      const userB = await testingInstance.registerAndLogin('patch-other-b@example.com');
+      const userB = await testingInstance.registerAndLogin(
+        'patch-other-b@example.com',
+      );
 
       await request(testingInstance.server)
         .patch(`/plans/${plan.id}`)
@@ -182,8 +192,10 @@ describe('PlanController (integration with test DB)', () => {
       await request(testingInstance.server).delete('/plans/1').expect(401);
     });
 
-    it('should return 400 when trying to delete another user\'s plan', async () => {
-      const userA = await testingInstance.registerAndLogin('delete-other-a@example.com');
+    it("should return 400 when trying to delete another user's plan", async () => {
+      const userA = await testingInstance.registerAndLogin(
+        'delete-other-a@example.com',
+      );
       const plan = await planService.createPlan(
         {
           title: 'User A Plan',
@@ -192,7 +204,9 @@ describe('PlanController (integration with test DB)', () => {
         { userId: userA.user.id, email: userA.user.email },
       );
 
-      const userB = await testingInstance.registerAndLogin('delete-other-b@example.com');
+      const userB = await testingInstance.registerAndLogin(
+        'delete-other-b@example.com',
+      );
 
       await request(testingInstance.server)
         .delete(`/plans/${plan.id}`)
