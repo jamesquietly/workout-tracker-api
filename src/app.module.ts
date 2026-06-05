@@ -6,6 +6,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { PlanModule } from './plans/plan.module';
+import { PlanActivityModule } from './plan-activities/plan-activity.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { PlanModule } from './plans/plan.module';
     }),
     AuthModule,
     PlanModule,
+    PlanActivityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

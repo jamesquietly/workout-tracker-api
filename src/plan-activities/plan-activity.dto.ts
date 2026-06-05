@@ -12,12 +12,12 @@ export class CreatePlanActivityDto {
   planId: number;
 
   @IsString()
-  @IsNotEmpty()
-  notes: string;
+  @IsOptional()
+  notes?: string;
 
-  @IsDate()
+  @IsString()
   @IsNotEmpty()
-  assignedDate: Date;
+  assignedDate: string;
 }
 
 export class UpdatePlanActivityDto {
@@ -25,7 +25,7 @@ export class UpdatePlanActivityDto {
   @IsOptional()
   notes?: string;
 
-  @IsDate()
+  @IsString()
   @IsOptional()
-  assignedDate?: Date;
+  assignedDate?: string;
 }

@@ -48,6 +48,7 @@ export class PlanActivityService {
   ) {
     const planActivity = this.planActivityRepository.create({
       ...planActivityData,
+      assignedDate: new Date(planActivityData.assignedDate),
       user: { id: user.userId },
     });
     return this.planActivityRepository.save(planActivity);
@@ -61,7 +62,12 @@ export class PlanActivityService {
     const planActivity = await this.findById(id);
     this.checkOwnership(planActivity, user.userId);
     if (planActivity) {
-      await this.planActivityRepository.update(id, updatePlanActivityDto);
+      await this.planActivityRepository.update(id, {
+        ...updatePlanActivityDto,
+        assignedDate: updatePlanActivityDto.assignedDate
+          ? new Date(updatePlanActivityDto.assignedDate)
+          : undefined,
+      });
     }
     return this.findById(id);
   }

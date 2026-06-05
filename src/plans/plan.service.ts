@@ -34,7 +34,10 @@ export class PlanService {
   }
 
   findByUserId(userId: number) {
-    return this.planRepository.find({ where: { user: { id: userId } } });
+    return this.planRepository.find({
+      where: { user: { id: userId } },
+      order: { created: 'ASC' },
+    });
   }
 
   createPlan(createPlanDto: CreatePlanDto, user: CurrentUserPayload) {
