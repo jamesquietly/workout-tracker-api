@@ -99,7 +99,7 @@ describe('PlanActivityController (integration with test DB)', () => {
         {
           planId: plan.id,
           notes: 'Activity item',
-          assignedDate: new Date(),
+          assignedDate: new Date().toISOString(),
         },
         { userId: user.id, email: user.email },
       );
@@ -128,7 +128,7 @@ describe('PlanActivityController (integration with test DB)', () => {
         {
           planId: planA.id,
           notes: 'User A activity',
-          assignedDate: new Date(),
+          assignedDate: new Date().toISOString(),
         },
         { userId: userA.user.id, email: userA.user.email },
       );
@@ -168,7 +168,7 @@ describe('PlanActivityController (integration with test DB)', () => {
         {
           planId: plan.id,
           notes: 'Original notes',
-          assignedDate: new Date(),
+          assignedDate: new Date().toISOString(),
         },
         { userId: user.id, email: user.email },
       );
@@ -201,7 +201,7 @@ describe('PlanActivityController (integration with test DB)', () => {
         {
           planId: planA.id,
           notes: 'User A activity',
-          assignedDate: new Date(),
+          assignedDate: new Date().toISOString(),
         },
         { userId: userA.user.id, email: userA.user.email },
       );
@@ -246,7 +246,7 @@ describe('PlanActivityController (integration with test DB)', () => {
         {
           planId: plan.id,
           notes: 'To delete',
-          assignedDate: new Date(),
+          assignedDate: new Date().toISOString(),
         },
         { userId: user.id, email: user.email },
       );
@@ -278,7 +278,7 @@ describe('PlanActivityController (integration with test DB)', () => {
         {
           planId: planA.id,
           notes: 'User A activity',
-          assignedDate: new Date(),
+          assignedDate: new Date().toISOString(),
         },
         { userId: userA.user.id, email: userA.user.email },
       );
